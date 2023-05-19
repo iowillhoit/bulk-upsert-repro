@@ -1,8 +1,26 @@
 # Dreamhouse Lightning Web Components Sample Application
 
-[![CI Workflow](https://github.com/trailheadapps/dreamhouse-lwc/workflows/CI/badge.svg)](https://github.com/trailheadapps/dreamhouse-lwc/actions?query=workflow%3ACI) [![Packaging Workflow](https://github.com/trailheadapps/dreamhouse-lwc/workflows/Packaging/badge.svg)](https://github.com/trailheadapps/dreamhouse-lwc/actions?query=workflow%3APackaging) [![codecov](https://codecov.io/gh/trailheadapps/dreamhouse-lwc/branch/main/graph/badge.svg)](https://codecov.io/gh/trailheadapps/dreamhouse-lwc)
+Steps to reproduce the bulk upsert issue (W-13314448)
 
-> IMPORTANT: This is the new Lightning Web Components version of the Dreamhouse sample application. If you are looking for the Aura version, click [here](https://github.com/dreamhouseapp/dreamhouse-sfdx).
+- Clone this repo and run the setup steps
+- Run `source source generate-dummy-csv.sh 155`
+  - This will create a Contact CSV file that is 155Mbs
+  - It takes about 30 seconds
+- Install an old sfdx `npm install sfdx-cli@7.175.0 -g`
+- Run `sfdx force:data:bulk:upsert --sobjecttype Contact --csvfile dummy_data.csv --externalid Id --wait 30`
+- Confirm this completes successfully
+- Now install the lastest sfdx `npm install sfdx-cli@latest -g`
+- Run `sfdx data:upsert:bulk --sobject Contact --file dummy_data.csv --external-id Id --wait 10`
+- Note that this will give you the following error
+
+```
+Running bulk upsert request... done
+Error (1): Encountered an exception when processing the request: InvalidJob : Error encountered while processing job: Uploaded batch file size greater than max size. Org max upload file size is 150000000 bytes
+```
+
+---
+&nbsp;
+
 
 ![dreamhouse-logo](dreamhouse-logo.png)
 
@@ -20,77 +38,77 @@ DreamHouse is a sample application that demonstrates the unique value propositio
 
 ## Table of contents
 
--   [Installing Dreamhouse Using a Scratch Org](#installing-dreamhouse-using-a-scratch-org): This is the recommended installation option. Use this option if you are a developer who wants to experience the app and the code.
+- [Installing Dreamhouse Using a Scratch Org](#installing-dreamhouse-using-a-scratch-org): This is the recommended installation option. Use this option if you are a developer who wants to experience the app and the code.
 
--   [Installing Dreamhouse Using an Unlocked Package](#installing-dreamhouse-using-an-unlocked-package): This option allows anybody to experience the sample app without installing a local development environment.
+- [Installing Dreamhouse Using an Unlocked Package](#installing-dreamhouse-using-an-unlocked-package): This option allows anybody to experience the sample app without installing a local development environment.
 
--   [Installing Dreamhouse using a Developer Edition Org or a Trailhead Playground](#installing-dreamhouse-using-a-developer-edition-org-or-a-trailhead-playground): Useful when tackling Trailhead Badges or if you want the app deployed to a more permanent environment than a Scratch org.
+- [Installing Dreamhouse using a Developer Edition Org or a Trailhead Playground](#installing-dreamhouse-using-a-developer-edition-org-or-a-trailhead-playground): Useful when tackling Trailhead Badges or if you want the app deployed to a more permanent environment than a Scratch org.
 
--   [Note on Sample Data Import](#note-on-sample-data-import)
+- [Note on Sample Data Import](#note-on-sample-data-import)
 
--   [Optional installation instructions](#optional-installation-instructions)
+- [Optional installation instructions](#optional-installation-instructions)
 
--   [Code tours](#code-tours)
+- [Code tours](#code-tours)
 
 ## Installing Dreamhouse using a Scratch Org
 
 1. Set up your environment. Follow the steps in the [Quick Start: Lightning Web Components](https://trailhead.salesforce.com/content/learn/projects/quick-start-lightning-web-components/) Trailhead project. The steps include:
 
-    - Enable Dev Hub in your Trailhead Playground
-    - Install Salesforce CLI
-    - Install Visual Studio Code
-    - Install the Visual Studio Code Salesforce extensions, including the Lightning Web Components extension
+   - Enable Dev Hub in your Trailhead Playground
+   - Install Salesforce CLI
+   - Install Visual Studio Code
+   - Install the Visual Studio Code Salesforce extensions, including the Lightning Web Components extension
 
 1. If you haven't already done so, authorize your hub org and provide it with an alias (**myhuborg** in the command below):
 
-    ```
-    sfdx auth:web:login -d -a myhuborg
-    ```
+   ```
+   sfdx auth:web:login -d -a myhuborg
+   ```
 
 1. Clone this repository:
 
-    ```
-    git clone https://github.com/dreamhouseapp/dreamhouse-lwc
-    cd dreamhouse-lwc
-    ```
+   ```
+   git clone https://github.com/dreamhouseapp/dreamhouse-lwc
+   cd dreamhouse-lwc
+   ```
 
 1. Create a scratch org and provide it with an alias (**dreamhouse** in the command below):
 
-    ```
-    sfdx force:org:create -s -f config/project-scratch-def.json -a dreamhouse
-    ```
+   ```
+   sfdx force:org:create -s -f config/project-scratch-def.json -a dreamhouse
+   ```
 
 1. Push the app to your scratch org:
 
-    ```
-    sfdx force:source:push
-    ```
+   ```
+   sfdx force:source:push
+   ```
 
 1. Assign the **dreamhouse** permission set to the default user:
 
-    ```
-    sfdx force:user:permset:assign -n dreamhouse
-    ```
+   ```
+   sfdx force:user:permset:assign -n dreamhouse
+   ```
 
 1. (Optional) Assign the `Walkthroughs` permission set to the default user.
 
-    > Note: this will enable your user to use In-App Guidance Walkthroughs, allowing you to be taken through a guided tour of the sample app. The Walkthroughs permission set gets auto-created with In-App guidance activation.
+   > Note: this will enable your user to use In-App Guidance Walkthroughs, allowing you to be taken through a guided tour of the sample app. The Walkthroughs permission set gets auto-created with In-App guidance activation.
 
-    ```
-    sfdx force:user:permset:assign -n Walkthroughs
-    ```
+   ```
+   sfdx force:user:permset:assign -n Walkthroughs
+   ```
 
 1. Import sample data:
 
-    ```
-    sfdx force:data:tree:import -p data/sample-data-plan.json
-    ```
+   ```
+   sfdx force:data:tree:import -p data/sample-data-plan.json
+   ```
 
 1. Open the scratch org:
 
-    ```
-    sfdx force:org:open
-    ```
+   ```
+   sfdx force:org:open
+   ```
 
 1. In **Setup**, under **Themes and Branding**, activate the **Lightning Lite** theme.
 
@@ -114,10 +132,10 @@ Make sure to start from a brand-new environment to avoid conflicts with previous
 
 1. If you're attempting the [Quick Start](https://trailhead.salesforce.com/en/content/learn/projects/quick-start-dreamhouse-sample-app) on Trailhead, this step is required, but otherwise, skip:
 
-    - Go to **Setup > Users > Permission Sets**.
-    - Click **dreamhouse**.
-    - Click **Manage Assignments**.
-    - Check your user and click **Add Assignments**.
+   - Go to **Setup > Users > Permission Sets**.
+   - Click **dreamhouse**.
+   - Click **Manage Assignments**.
+   - Check your user and click **Add Assignments**.
 
 1. In **Setup**, under **Themes and Branding**, activate the **Lightning Lite** theme.
 
@@ -132,40 +150,40 @@ Make sure to start from a brand-new environment to avoid conflicts with previous
 
 1. Clone this repository:
 
-    ```
-    git clone https://github.com/dreamhouseapp/dreamhouse-lwc
-    cd dreamhouse-lwc
-    ```
+   ```
+   git clone https://github.com/dreamhouseapp/dreamhouse-lwc
+   cd dreamhouse-lwc
+   ```
 
 1. Authorize your Trailhead Playground or Developer org and provide it with an alias (**mydevorg** in the command below):
 
-    ```
-    sfdx auth:web:login -s -a mydevorg
-    ```
+   ```
+   sfdx auth:web:login -s -a mydevorg
+   ```
 
 1. Run this command in a terminal to deploy the app.
 
-    ```
-    sfdx force:source:deploy -p force-app
-    ```
+   ```
+   sfdx force:source:deploy -p force-app
+   ```
 
 1. Assign the `dreamhouse` permission set to the default user.
 
-    ```
-    sfdx force:user:permset:assign -n dreamhouse
-    ```
+   ```
+   sfdx force:user:permset:assign -n dreamhouse
+   ```
 
 1. Import some sample data.
 
-    ```
-    sfdx force:data:tree:import -p ./data/sample-data-plan.json
-    ```
+   ```
+   sfdx force:data:tree:import -p ./data/sample-data-plan.json
+   ```
 
 1. If your org isn't already open, open it now:
 
-    ```
-    sfdx force:org:open -u mydevorg
-    ```
+   ```
+   sfdx force:org:open -u mydevorg
+   ```
 
 1. In **Setup**, under **Themes and Branding**, activate the **Lightning Lite** theme.
 
@@ -181,7 +199,7 @@ This repository contains several files that are relevant if you want to integrat
 
 ### Code formatting
 
-[Prettier](https://prettier.io 'https://prettier.io/') is a code formatter used to ensure consistent formatting across your code base. To use Prettier with Visual Studio Code, install [this extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) from the Visual Studio Code Marketplace. The [.prettierignore](/.prettierignore) and [.prettierrc](/.prettierrc) files are provided as part of this repository to control the behavior of the Prettier formatter.
+[Prettier](https://prettier.io "https://prettier.io/") is a code formatter used to ensure consistent formatting across your code base. To use Prettier with Visual Studio Code, install [this extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) from the Visual Studio Code Marketplace. The [.prettierignore](/.prettierignore) and [.prettierrc](/.prettierrc) files are provided as part of this repository to control the behavior of the Prettier formatter.
 
 > **Warning**
 > The current Apex Prettier plugin version requires that you install Java 11 or above.
